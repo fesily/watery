@@ -27,6 +27,53 @@ struct TEST
 	int g;
 };
 WATERY_REFLECTION(TEST, a, b, c, d, e, f, g)
+template<typename T>
+struct TEST1
+{
+	T a;
+	int b()
+	{
+		return 0;
+	}
+	T c;
+	T d;
+	void e()
+	{
+
+	}
+	void f()
+	{
+
+	}
+	T g;
+};
+WATERY_REFLECTION_TEMPLATE(TEST1,1, a, b, c, d, e, f, g)
+WATERY_REFLECTION_TEMPLATE_FULL(TEST1,MACRO_FORWARD(TEST1<int>), a, b, c, d, e, f, g)
+template<typename TEST>
+void DoWork(TEST t)
+{
+	watery::for_each_function<TEST>([t](auto fn, auto index) mutable
+	{
+		(t.*fn)();
+	});
+	watery::for_each_field_ptr<TEST>([&t](auto ptr, auto index) mutable
+	{
+		t.*ptr = 1;
+	});
+	assert(t.a == 1);
+	assert(t.c == 1);
+	assert(t.d == 1);
+	assert(t.g == 1);
+	watery::for_each_field(t,[](auto &value, auto index)
+	{
+		value = 2;
+	});
+	assert(t.a == 2);
+	assert(t.c == 2);
+	assert(t.d == 2);
+	assert(t.g == 2);
+}
+
 int main()
 {
     using namespace watery;
@@ -49,26 +96,15 @@ int main()
     }
 	{
     	TEST t ={};		
-		for_each_function<TEST>([t](auto fn, auto index) mutable
-		{
-			(t.*fn)();
-		});
-		for_each_field_ptr<TEST>([&t](auto ptr, auto index) mutable
-		{
-			t.*ptr = 1;
-		});
-		assert(t.a == 1);
-		assert(t.c == 1);
-		assert(t.d == 1);
-		assert(t.g == 1);
-		for_each_field(t,[](auto &value, auto index)
-		{
-			value = 2;
-		});
-		assert(t.a == 2);
-		assert(t.c == 2);
-		assert(t.d == 2);
-		assert(t.g == 2);
+		DoWork(t);
+	} 
+	{
+		TEST1<double> t = {};
+		DoWork(t);
 	}
+    {
+		TEST1<int> t = {};
+		DoWork(t);
+    }
     return 0;
 }

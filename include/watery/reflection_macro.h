@@ -196,7 +196,7 @@
 #define IGUANA_TEMPLATE_LIST(...) MACRO_CONCAT(MAKE_ARG_LIST, GET_ARG_COUNT(__VA_ARGS__))(ADD_TYPENAME, __VA_ARGS__)  
 #define MAKE_ARG_TYPENAME(N) MACRO_CONCAT(CON_TYPENAME,N)
 
-#include "reflection_struct.h"
+#include <watery\reflection_struct.h>
 
 #define IGUANA_MAKE_META_DATA(STRUCT_NAME, N, ...)				\
     IGUANA_MAKE_META_DATA_IMPL(N,								\
