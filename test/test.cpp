@@ -1,5 +1,8 @@
 #include <watery/watery.hpp>
 #include <cassert>
+#include <type_traits>
+#include "watery/reflection_macro.h"
+#include <tuple>
 
 
 template<typename T>
@@ -48,7 +51,7 @@ struct TEST1
 	T g;
 };
 WATERY_REFLECTION_TEMPLATE(TEST1,1, a, b, c, d, e, f, g)
-WATERY_REFLECTION_TEMPLATE_FULL(TEST1,MACRO_FORWARD(TEST1<int>), a, b, c, d, e, f, g)
+WATERY_REFLECTION_TEMPLATE_FULL(TEST1,MACRO_FORWARD(int), a, b, c, d, e, f, g)
 template<typename TEST>
 void DoWork(TEST t)
 {
@@ -105,6 +108,13 @@ int main()
     {
 		TEST1<int> t = {};
 		DoWork(t);
+    }
+    {
+	    struct MMM
+	    {
+		    
+	    };
+		static_assert(!is_reflection<MMM>::value, "");
     }
     return 0;
 }

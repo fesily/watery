@@ -14,8 +14,8 @@ IGUANA_MAKE_META_DATA(STRUCT_NAME, GET_ARG_COUNT(__VA_ARGS__), __VA_ARGS__)
  * \param STRUCT_NAME name
  * \param TYPENAME_N number of typename
  */
-#define WATERY_REFLECTION_TEMPLATE(STRUCT_NAME,			\
-							TYPENAME_N, ...)		\
+#define WATERY_REFLECTION_TEMPLATE(STRUCT_NAME,								\
+							TYPENAME_N, ...)								\
 IGUANA_MAKE_META_DATA_TEMPLATE1(STRUCT_NAME,								\
 								MAKE_ARG_TYPENAME(TYPENAME_N),				\
 								GET_ARG_COUNT(__VA_ARGS__), __VA_ARGS__)
@@ -30,11 +30,13 @@ IGUANA_MAKE_META_DATA_TEMPLATE1(STRUCT_NAME,								\
  * \param STRUCT_TYPENAME partial template (example: Test<int,T1>),typename must be T1,T2,T3,T4....
  * \param TYPENAME_N number of typename
  */
-#define WATERY_REFLECTION_TEMPLATE_PARTIAL(STRUCT_NAME,				\
+#define WATERY_REFLECTION_TEMPLATE_PARTIAL(STRUCT_NAME,			\
 									STRUCT_TYPENAME,			\
 									TYPENAME_N, ...)			\
-IGUANA_MAKE_META_DATA_TEMPLATE(STRUCT_NAME,												\
-							   MACRO_FORWARD(STRUCT_TYPENAME),							\
+IGUANA_MAKE_META_DATA_TEMPLATE0(TEMPLATE_MARCO,											\
+								TEMPLATE_MARCO,											\
+								STRUCT_NAME,											\
+								MACRO_FORWARD(STRUCT_TYPENAME),							\
 							   IGUANA_TEMPLATE_LIST(MAKE_ARG_TYPENAME(TYPENAME_N)),		\
 							   GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__)
 
@@ -43,9 +45,11 @@ IGUANA_MAKE_META_DATA_TEMPLATE(STRUCT_NAME,												\
  * \param STRUCT_NAME name
  * \param STRUCT_TYPENAME full template name (example: Test<int>)
  */
-#define WATERY_REFLECTION_TEMPLATE_FULL(STRUCT_NAME,								\
+#define WATERY_REFLECTION_TEMPLATE_FULL(STRUCT_NAME,						\
 								STRUCT_TYPENAME,...)						\
-IGUANA_MAKE_META_DATA_TEMPLATE(STRUCT_NAME,									\
+IGUANA_MAKE_META_DATA_TEMPLATE0(TEMPLATE_MARCO_FULL,						\
+								TEMPLATE_MARCO_NULL,						\
+								STRUCT_NAME,								\
 								MACRO_FORWARD(STRUCT_TYPENAME), ,			\
 								GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__)
 #endif // REFLECTION_H

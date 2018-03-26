@@ -197,28 +197,47 @@
 #define MAKE_ARG_TYPENAME(N) MACRO_CONCAT(CON_TYPENAME,N)
 
 #include <watery\reflection_struct.h>
-
+#define TEMPLATE_MARCO_NULL(...) 
+#define TEMPLATE_MARCO_FULL(...) template<>
+#define TEMPLATE_MARCO(L) template<L>
 #define IGUANA_MAKE_META_DATA(STRUCT_NAME, N, ...)				\
-    IGUANA_MAKE_META_DATA_IMPL(N,								\
+    IGUANA_MAKE_META_DATA_IMPL(TEMPLATE_MARCO_FULL(),			\
+								TEMPLATE_MARCO_NULL(),			\
+								N,								\
 								STRUCT_NAME,					\
-								STRUCT_NAME, ,					\
+								STRUCT_NAME,					\
 								MAKE_STR_LIST(N,__VA_ARGS__),	\
 								MAKE_ARG_LIST(N, &struct_type::OBJECT, __VA_ARGS__))
 
-#define IGUANA_MAKE_META_DATA_TEMPLATE(STRUCT_NAME,					\
+#define IGUANA_MAKE_META_DATA_TEMPLATE(TEMPLATE_MARCO0,				\
+										TEMPLATE_MARCO1,			\
+										STRUCT_NAME,				\
 										STRUCT_TYPENAME,			\
-										TYPENAME_LIST,				\
 										N, ...)						\
-IGUANA_MAKE_META_DATA_IMPL(N,															\
+IGUANA_MAKE_META_DATA_IMPL(TEMPLATE_MARCO0,												\
+							TEMPLATE_MARCO1,											\
+							N,															\
 							STRUCT_NAME,												\
 							IGUANA_TEMPLATE_STRUCT_NAME(STRUCT_NAME,STRUCT_TYPENAME),	\
-							TYPENAME_LIST,												\
 							MAKE_STR_LIST(N,__VA_ARGS__),								\
 							MAKE_ARG_LIST(N, &struct_type::OBJECT, __VA_ARGS__))
 
+#define IGUANA_MAKE_META_DATA_TEMPLATE0(TEMPLATE_MARCO0,							\
+										TEMPLATE_MARCO1,							\
+										STRUCT_NAME,								\
+										STRUCT_TYPENAME,TYPENAME_LIST, N, ...)		\
+IGUANA_MAKE_META_DATA_TEMPLATE(TEMPLATE_MARCO0(TYPENAME_LIST),						\
+								TEMPLATE_MARCO1(TYPENAME_LIST),						\
+								STRUCT_NAME,										\
+								MACRO_FORWARD(STRUCT_TYPENAME),						\
+								N, __VA_ARGS__)
+
+
 #define IGUANA_MAKE_META_DATA_TEMPLATE1(STRUCT_NAME,					\
 										STRUCT_TYPENAME, N, ...)		\
-IGUANA_MAKE_META_DATA_TEMPLATE(STRUCT_NAME,								\
+IGUANA_MAKE_META_DATA_TEMPLATE0(TEMPLATE_MARCO,							\
+								TEMPLATE_MARCO,							\
+								STRUCT_NAME,							\
 								MACRO_FORWARD(STRUCT_TYPENAME),			\
 								IGUANA_TEMPLATE_LIST(STRUCT_TYPENAME),	\
 								N, __VA_ARGS__)

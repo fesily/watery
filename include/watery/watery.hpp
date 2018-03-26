@@ -86,13 +86,19 @@ void for_each_ptr_impl(const std::tuple<Args...>& ptrs, F&& f, std::index_sequen
 template<typename T>
 struct iguana_reflect_info
 {
-	using type = iguana_reflect_members<T>;
+	using type = decltype(____watery_reflect_invoker(std::declval<T>()));
 };
 template<typename T>
 using iguana_reflect_info_t = typename iguana_reflect_info<typename std::decay<T>::type>::type;
+
+template<typename T>
+struct is_reflection : decltype(____watery_reflect_invoker(std::declval<T>()))
+{
+};
 template<typename T, typename F>
 void for_each_function(F&& f)
 {
+	static_assert(is_reflection<T>::value, "");
 	using M = iguana_reflect_info_t<T>;
 	using M_index_sequence = typename member_function_index<decltype(M::apply_impl())>::type;
 	details::for_each_ptr_impl(M::apply_impl(), std::forward<F>(f), M_index_sequence{});
@@ -101,6 +107,7 @@ void for_each_function(F&& f)
 template<typename T, typename F>
 void for_each_field(T&& t, F&& f)
 {
+	static_assert(is_reflection<T>::value, "");
 	using M = iguana_reflect_info_t<T>;
 	using M_index_sequence = typename member_field_index<decltype(M::apply_impl())>::type;
 	details::for_each_impl(std::forward<T>(t), M::apply_impl(), std::forward<F>(f), M_index_sequence{});
@@ -109,6 +116,7 @@ void for_each_field(T&& t, F&& f)
 template<typename T, typename F>
 void for_each_field_ptr(F&& f)
 {
+	static_assert(is_reflection<T>::value, "");
 	using M = iguana_reflect_info_t<T>;
 	using M_index_sequence = typename member_field_index<decltype(M::apply_impl())>::type;
 	details::for_each_ptr_impl(M::apply_impl(), std::forward<F>(f), M_index_sequence{});
@@ -117,6 +125,7 @@ void for_each_field_ptr(F&& f)
 template<typename T, typename F>
 void for_each_all(F&& f)
 {
+	static_assert(is_reflection<T>::value, "");
 	using M = iguana_reflect_info_t<T>;
 	using M_index_sequence = std::make_index_sequence<M::all_member_size>;
 	details::for_each_ptr_impl(M::apply_impl(), std::forward<F>(f), M_index_sequence{});
