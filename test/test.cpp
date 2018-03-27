@@ -52,6 +52,30 @@ struct TEST1
 };
 WATERY_REFLECTION_TEMPLATE(TEST1,1, a, b, c, d, e, f, g)
 WATERY_REFLECTION_TEMPLATE_FULL(TEST1,MACRO_FORWARD(int), a, b, c, d, e, f, g)
+template<typename T,typename T2>
+struct TEST2
+{
+	T a;
+	int b()
+	{
+		return 0;
+	}
+	T c;
+	T2 d;
+	void e()
+	{
+
+	}
+	void f()
+	{
+
+	}
+	T2 g;
+};
+
+WATERY_REFLECTION_TEMPLATE(TEST2,2,a)
+WATERY_REFLECTION_TEMPLATE_PARTIAL(TEST2, MACRO_FORWARD(int, T1),1, a, b, c, d, e, f, g)
+WATERY_REFLECTION_TEMPLATE_FULL(TEST2, MACRO_FORWARD(int, double), a, b, c, d, e, f, g)
 template<typename TEST>
 void DoWork(TEST t)
 {
@@ -115,6 +139,15 @@ int main()
 		    
 	    };
 		static_assert(!is_reflection<MMM>::value, "");
+    }
+    {
+		// macro impl test
+		TEST2<int, float> t1;
+		TEST2<int, int> t2;
+		TEST2<float, int> t3;
+		static_assert(std::is_same<decltype( ____watery_reflect_invoker(t1)),reflect_details::TEST2iguana_reflect_members<TEST2<int,float>>>::value,"");
+		static_assert(std::is_same<decltype(____watery_reflect_invoker(t2)), reflect_details::TEST2iguana_reflect_members<TEST2<int, int>>>::value, "");
+		static_assert(std::is_same<decltype(____watery_reflect_invoker(t3)), reflect_details::TEST2iguana_reflect_members<TEST2<float, int>>>::value, "");
     }
     return 0;
 }

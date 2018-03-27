@@ -199,7 +199,7 @@
 #include <watery\reflection_struct.h>
 #define TEMPLATE_MARCO_NULL(...) 
 #define TEMPLATE_MARCO_FULL(...) template<>
-#define TEMPLATE_MARCO(L) template<L>
+#define TEMPLATE_MARCO(...) template<__VA_ARGS__>
 #define IGUANA_MAKE_META_DATA(STRUCT_NAME, N, ...)				\
     IGUANA_MAKE_META_DATA_IMPL(TEMPLATE_MARCO_FULL(),			\
 								TEMPLATE_MARCO_NULL(),			\
@@ -214,8 +214,8 @@
 										STRUCT_NAME,				\
 										STRUCT_TYPENAME,			\
 										N, ...)						\
-IGUANA_MAKE_META_DATA_IMPL(TEMPLATE_MARCO0,												\
-							TEMPLATE_MARCO1,											\
+IGUANA_MAKE_META_DATA_IMPL(MACRO_FORWARD(TEMPLATE_MARCO0),								\
+							MACRO_FORWARD(TEMPLATE_MARCO1),								\
 							N,															\
 							STRUCT_NAME,												\
 							IGUANA_TEMPLATE_STRUCT_NAME(STRUCT_NAME,STRUCT_TYPENAME),	\
@@ -239,6 +239,6 @@ IGUANA_MAKE_META_DATA_TEMPLATE0(TEMPLATE_MARCO,							\
 								TEMPLATE_MARCO,							\
 								STRUCT_NAME,							\
 								MACRO_FORWARD(STRUCT_TYPENAME),			\
-								IGUANA_TEMPLATE_LIST(STRUCT_TYPENAME),	\
+								MACRO_CONCAT(MAKE_ARG_LIST, GET_ARG_COUNT(STRUCT_TYPENAME))(ADD_TYPENAME, STRUCT_TYPENAME),	\
 								N, __VA_ARGS__)
 #endif // REFLECTION_MACRO_H

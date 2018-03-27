@@ -22,12 +22,12 @@ IGUANA_MAKE_META_DATA_TEMPLATE1(STRUCT_NAME,								\
 /*
  * example:
  *  template<typename T1,typename T2> Test{T1 a; void b(T2){}};
- *  WATERY_REFLECTION_TEMPLATE_PARTIAL(Test,MACRO_FORWARD(Test<int,T1>),1,a,b)
+ *  WATERY_REFLECTION_TEMPLATE_PARTIAL(Test,MACRO_FORWARD(int,T1),1,a,b)
  */
 /**
  * \brief reflection partial template object
  * \param STRUCT_NAME name
- * \param STRUCT_TYPENAME partial template (example: Test<int,T1>),typename must be T1,T2,T3,T4....
+ * \param STRUCT_TYPENAME partial typename (example: Test<int,T1>, here use : int,T1),typename must be T1,T2,T3,T4....
  * \param TYPENAME_N number of typename
  */
 #define WATERY_REFLECTION_TEMPLATE_PARTIAL(STRUCT_NAME,			\
@@ -43,7 +43,7 @@ IGUANA_MAKE_META_DATA_TEMPLATE0(TEMPLATE_MARCO,											\
 /**
  * \brief reflection full partial template object
  * \param STRUCT_NAME name
- * \param STRUCT_TYPENAME full template name (example: Test<int>)
+ * \param STRUCT_TYPENAME full typename name (example: Test<int,double>,here use : int,double)
  */
 #define WATERY_REFLECTION_TEMPLATE_FULL(STRUCT_NAME,						\
 								STRUCT_TYPENAME,...)						\
