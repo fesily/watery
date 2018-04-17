@@ -1,17 +1,14 @@
-[中文版](CN_README.md)
 # watery
-	c++ static reflection header only library.
-	now support enum object, class object and template object.
-	try implemented c++ iso standardization Proposed static reflection:p0194r3.
-	
+	c++ 编译期反射库,只需要头文件.
+	现在支持枚举,普通的类型,以及模板类型
+
 ##Note:
 
-	Only test on msvc2017.15.6!
-	I think watery can work well on any compiler which supported c++17.
-	
+	只在MSVC2017下编译过,因为其他编译器都没装.支持c++17的编译器应该都是可以的.
+
 ##Install:
 
-	Just only use <include> dir.
+	包括Include文件夹即可
 	
 ##Example:
 
@@ -24,7 +21,7 @@
 		WATERY_ENUM_REFLECTION(Type,a,b)
 		static_assert(watery::get_name(Type::a) == "a");
 		static_assert(watery::get_name(Type::b) == "b");
-		// this can support serializer/deserializer from int/string to enum
+		//这个东西可能的用处就是序列化/反序列化,从整数或者字符串转换到枚举,顺带检测了.
 		```
 	###Ojbect
 		```cpp
@@ -47,9 +44,12 @@
 			}
 		});
 		```
+	###Template
+		//没写,详见Test.cpp
+		
 ##Future:
 
-	1.fork support c++11,c++14.
-	2.fork support msvc 2013,2015.
-	3.add msvc/clang extended plugin to support this lib, automatically generated reflection code.
-	4.improve reflection template object.
+	1.分支支持c++11,c++14.理论上这个库所有的功能都可以在c++11上实现,就是代码有点难看吧.
+	2.分支支持msvc 2013,2015.
+	3.添加VC和Clang的插件,直接生成反射的宏代码.(更进一步可以在编译前动态更新,暂缓)
+	4.改进模板反射的宏写法,目前的难用
