@@ -8,6 +8,25 @@
 template<typename T> struct iguana_reflect_members;
 namespace watery
 {
+template<typename T>
+struct is_member_object_pointer;
+template<typename T, T ptr>
+struct is_member_object_pointer<reflex_info<T, ptr>>
+{
+	static constexpr auto value = std::is_member_object_pointer_v<T>;
+};
+template<typename T>
+struct is_member_function_pointer;
+template<typename T, T ptr>
+struct is_member_function_pointer<reflex_info<T, ptr>>
+{
+	static constexpr auto value = std::is_member_function_pointer_v<T>;
+};
+template<typename T>
+constexpr bool is_member_object_pointer_v = is_member_object_pointer<T>::value;
+template<typename T>
+constexpr bool is_member_function_pointer_v = is_member_function_pointer<T>::value;
+
 namespace details
 {
 template<class T, size_t S2> struct push_integer_sequence;
@@ -45,20 +64,6 @@ struct calc_member_x_index_impl <Tuple, List, Fn, std::index_sequence<indexs...>
 	using type = typename get_member_type_index<Tuple, List, Fn, indexs...>::type;
 };
 }
-template<typename T>
-struct is_member_object_pointer;
-template<typename T,T ptr>
-struct is_member_object_pointer<reflex_info<T,ptr>>
-{
-	static constexpr auto value = std::is_member_object_pointer_v<T>;
-};
-template<typename T>
-struct is_member_function_pointer;
-template<typename T, T ptr>
-struct is_member_function_pointer<reflex_info<T, ptr>>
-{
-	static constexpr auto value = std::is_member_function_pointer_v<T>;
-};
 template<typename Tuple, template <typename...> typename Fn>
 struct calc_member_x_index
 {
