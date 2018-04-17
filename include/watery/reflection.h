@@ -8,7 +8,12 @@
  */
 #define WATERY_REFLECTION(STRUCT_NAME, ...) \
 IGUANA_MAKE_META_DATA(STRUCT_NAME, GET_ARG_COUNT(__VA_ARGS__), __VA_ARGS__)
-
+ /**
+ * \brief reflection enum object
+ * \param STRUCT_NAME name
+ */
+#define WATERY_ENUM_REFLECTION(ENUM_NAME, ...) \
+WATERY_MAKE_ENUM_META_DATA(ENUM_NAME, GET_ARG_COUNT(__VA_ARGS__), __VA_ARGS__)
 /**
  * \brief reflection template object
  * \param STRUCT_NAME name

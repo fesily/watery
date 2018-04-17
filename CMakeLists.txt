@@ -2,6 +2,8 @@
 
 project (watery VERSION 0.00.1 LANGUAGES CXX)
 
+add_compile_options(/std:c++17)
+
 include_directories("include")
 
 add_subdirectory(test)

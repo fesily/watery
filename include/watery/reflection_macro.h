@@ -160,7 +160,8 @@
 #define MARCO_EXPAND(...)                 __VA_ARGS__
 #define APPLY_VARIADIC_MACRO(macro, ...)  MARCO_EXPAND(macro(__VA_ARGS__))
 
-#define OBJECT(t)          t
+#define OBJECT(t)        watery::reflex_info<decltype(&struct_type::t),&struct_type::t>
+#define ENUM_OBJECT(t)   watery::reflex_info<struct_type,struct_type::t>
 
 #define MAKE_NAMES(...) #__VA_ARGS__,
 
@@ -207,7 +208,15 @@
 								STRUCT_NAME,					\
 								STRUCT_NAME,					\
 								MAKE_STR_LIST(N,__VA_ARGS__),	\
-								MAKE_ARG_LIST(N, &struct_type::OBJECT, __VA_ARGS__))
+								MAKE_ARG_LIST(N, OBJECT, __VA_ARGS__))
+#define WATERY_MAKE_ENUM_META_DATA(STRUCT_NAME, N, ...)				\
+    IGUANA_MAKE_META_DATA_IMPL(TEMPLATE_MARCO_FULL(),			\
+								TEMPLATE_MARCO_NULL(),			\
+								N,								\
+								STRUCT_NAME,					\
+								STRUCT_NAME,					\
+								MAKE_STR_LIST(N,__VA_ARGS__),	\
+								MAKE_ARG_LIST(N, ENUM_OBJECT, __VA_ARGS__))
 
 #define IGUANA_MAKE_META_DATA_TEMPLATE(TEMPLATE_MARCO0,				\
 										TEMPLATE_MARCO1,			\
@@ -220,7 +229,7 @@ IGUANA_MAKE_META_DATA_IMPL(MACRO_FORWARD(TEMPLATE_MARCO0),								\
 							STRUCT_NAME,												\
 							IGUANA_TEMPLATE_STRUCT_NAME(STRUCT_NAME,STRUCT_TYPENAME),	\
 							MAKE_STR_LIST(N,__VA_ARGS__),								\
-							MAKE_ARG_LIST(N, &struct_type::OBJECT, __VA_ARGS__))
+							MAKE_ARG_LIST(N,  OBJECT, __VA_ARGS__))
 
 #define IGUANA_MAKE_META_DATA_TEMPLATE0(TEMPLATE_MARCO0,							\
 										TEMPLATE_MARCO1,							\

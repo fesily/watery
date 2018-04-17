@@ -4,7 +4,6 @@
 #include "watery/reflection_macro.h"
 #include <tuple>
 
-
 template<typename T>
 struct is__ : std::is_same<T, int>
 {
@@ -27,9 +26,14 @@ struct TEST
 	{
 		
 	}
+	int& dd(int, std::string& , const std::string&)
+	{
+		static int ret = 0;
+		return ret;
+	}
 	int g;
 };
-WATERY_REFLECTION(TEST, a, b, c, d, e, f, g)
+WATERY_REFLECTION(TEST, a, b, c, d, e, f, g,dd)
 template<typename T>
 struct TEST1
 {
@@ -100,10 +104,33 @@ void DoWork(TEST t)
 	assert(t.d == 2);
 	assert(t.g == 2);
 }
-
+enum class ReflxType
+{
+	a,
+	b,
+};
+WATERY_ENUM_REFLECTION(ReflxType, a, b)
 int main()
 {
-    using namespace watery;
+	using namespace watery;
+	//ENUM object
+	{
+		constexpr auto index = get_reflex_index(ReflxType::a);
+		static_assert(index == 0);
+		constexpr auto name = get_name(ReflxType::a);
+		static_assert(name == "a"); 
+
+		constexpr auto error_type = ReflxType(99999);
+		constexpr auto index1 = get_reflex_index(error_type);
+		static_assert(index1 == -1);
+		constexpr auto name1 = get_name(error_type);
+		static_assert(name1 == nullptr);
+	}
+	{
+		using T1 = std::tuple_element_t<0, watery::reflex_type_t<TEST>::reflex_type>;
+		constexpr auto index = get_reflex_index<T1>();
+		static_assert(index == 0);
+	}
     {
 		using namespace watery::details;
 
@@ -123,7 +150,7 @@ int main()
     }
 	{
     	TEST t ={};		
-		DoWork(t);
+		//DoWork(t);
 	} 
 	{
 		TEST1<double> t = {};
@@ -140,14 +167,36 @@ int main()
 	    };
 		static_assert(!is_reflection<MMM>::value, "");
     }
+	{
+		TEST t;
+		watery::for_each_function_meta<TEST>([=](auto fn) mutable {
+			constexpr auto name = watery::get_name(fn);
+			if constexpr (name != "dd")
+			{
+				watery::invoke(fn, t);
+			}
+			else
+			{
+				int a = 99;
+				std::string s = "1234";
+				auto& r = watery::invoke(fn, t, a, s, "455");
+			}
+		});
+		int a = 99;
+		std::string s = "1234";
+		auto& r = watery::invoke(&TEST::dd, t, a, s, "455");
+		r += 1;
+		auto& r1 = watery::invoke(&TEST::dd, t, a, s, "455");
+		assert(r1 == 1);
+    }
     {
 		// macro impl test
 		TEST2<int, float> t1;
 		TEST2<int, int> t2;
 		TEST2<float, int> t3;
-		static_assert(std::is_same<decltype( ____watery_reflect_invoker(t1)),reflect_details::TEST2iguana_reflect_members<TEST2<int,float>>>::value,"");
-		static_assert(std::is_same<decltype(____watery_reflect_invoker(t2)), reflect_details::TEST2iguana_reflect_members<TEST2<int, int>>>::value, "");
-		static_assert(std::is_same<decltype(____watery_reflect_invoker(t3)), reflect_details::TEST2iguana_reflect_members<TEST2<float, int>>>::value, "");
+		static_assert(std::is_same<decltype( ____watery_reflect_invoker(t1)),reflect_details::TEST2_iguana_reflect_members<TEST2<int,float>>>::value,"");
+		static_assert(std::is_same<decltype(____watery_reflect_invoker(t2)), reflect_details::TEST2_iguana_reflect_members<TEST2<int, int>>>::value, "");
+		static_assert(std::is_same<decltype(____watery_reflect_invoker(t3)), reflect_details::TEST2_iguana_reflect_members<TEST2<float, int>>>::value, "");
     }
     return 0;
 }
