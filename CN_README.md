@@ -1,55 +1,46 @@
 # watery
-	c++ ±àÒëÆÚ·´Éä¿â,Ö»ĞèÒªÍ·ÎÄ¼ş.
-	ÏÖÔÚÖ§³ÖÃ¶¾Ù,ÆÕÍ¨µÄÀàĞÍ,ÒÔ¼°Ä£°åÀàĞÍ
-
-##Note:
-
-	Ö»ÔÚMSVC2017ÏÂ±àÒë¹ı,ÒòÎªÆäËû±àÒëÆ÷¶¼Ã»×°.Ö§³Öc++17µÄ±àÒëÆ÷Ó¦¸Ã¶¼ÊÇ¿ÉÒÔµÄ.
-
-##Install:
-
-	°üÀ¨IncludeÎÄ¼ş¼Ğ¼´¿É
-	
-##Example:
-
-	###Enum
-		```cpp
-		enum class Type{
-			a=-1,
-			b=999,
-		}
-		WATERY_ENUM_REFLECTION(Type,a,b)
-		static_assert(watery::get_name(Type::a) == "a");
-		static_assert(watery::get_name(Type::b) == "b");
-		//Õâ¸ö¶«Î÷¿ÉÄÜµÄÓÃ´¦¾ÍÊÇĞòÁĞ»¯/·´ĞòÁĞ»¯,´ÓÕûÊı»òÕß×Ö·û´®×ª»»µ½Ã¶¾Ù,Ë³´ø¼ì²âÁË.
-		```
-	###Ojbect
-		```cpp
-		class Test{
-			int a;
-			int b;
-			int c(){}
-		}
-		WATERY_REFLECTION(Test,a,b,c)
-		watery::for_each_all_meta<Test>([](auto meta){
-			constexpr auto name = watery::get_name(meta);
-			if constexpr(watery::is_member_object_v(meta))
-			{
-			
-			}
-			else if constexpr(watery::is_member_function_v(meta))
-			{
-				Test t;
-				watery::invoke(meta,t);// call Test.c()
-			}
-		});
-		```
-	###Template
-		//Ã»Ğ´,Ïê¼ûTest.cpp
-		
-##Future:
-
-	1.·ÖÖ§Ö§³Öc++11,c++14.ÀíÂÛÉÏÕâ¸ö¿âËùÓĞµÄ¹¦ÄÜ¶¼¿ÉÒÔÔÚc++11ÉÏÊµÏÖ,¾ÍÊÇ´úÂëÓĞµãÄÑ¿´°É.
-	2.·ÖÖ§Ö§³Ömsvc 2013,2015.
-	3.Ìí¼ÓVCºÍClangµÄ²å¼ş,Ö±½ÓÉú³É·´ÉäµÄºê´úÂë.(¸ü½øÒ»²½¿ÉÒÔÔÚ±àÒëÇ°¶¯Ì¬¸üĞÂ,Ôİ»º)
-	4.¸Ä½øÄ£°å·´ÉäµÄºêĞ´·¨,Ä¿Ç°µÄÄÑÓÃ
+c++ ç¼–è¯‘æœŸåå°„åº“,åªéœ€è¦å¤´æ–‡ä»¶.  
+ç°åœ¨æ”¯æŒæšä¸¾,æ™®é€šçš„ç±»å‹,ä»¥åŠæ¨¡æ¿ç±»å‹  
+## Note:
+åªåœ¨MSVC2017ä¸‹ç¼–è¯‘è¿‡,å› ä¸ºå…¶ä»–ç¼–è¯‘å™¨éƒ½æ²¡è£….æ”¯æŒc++17çš„ç¼–è¯‘å™¨åº”è¯¥éƒ½æ˜¯å¯ä»¥çš„.  
+## nstall:
+åŒ…æ‹¬Includeæ–‡ä»¶å¤¹å³å¯  
+## Example:
+### Enum
+```cpp
+enum class Type{
+	a=-1,
+	b=999,
+}
+WATERY_ENUM_REFLECTION(Type,a,b)
+static_assert(watery::get_name(Type::a) == "a");
+static_assert(watery::get_name(Type::b) == "b");
+//è¿™ä¸ªä¸œè¥¿å¯èƒ½çš„ç”¨å¤„å°±æ˜¯åºåˆ—åŒ–/ååºåˆ—åŒ–,ä»æ•´æ•°æˆ–è€…å­—ç¬¦ä¸²è½¬æ¢åˆ°æšä¸¾,é¡ºå¸¦æ£€æµ‹äº†.
+```
+### Ojbect
+```cpp
+class Test{
+	int a;	
+	int b;
+	int c(){}
+}
+WATERY_REFLECTION(Test,a,b,c)
+watery::for_each_all_meta<Test>([](auto meta){
+constexpr auto name = watery::get_name(meta);
+if constexpr(watery::is_member_object_v(meta))
+{	
+}
+else if constexpr(watery::is_member_function_v(meta))
+{
+	Test t;
+	watery::invoke(meta,t);// call Test.c()
+}
+});
+```
+### Template
+//æ²¡å†™,è¯¦è§Test.cpp		
+## Future:
+1.åˆ†æ”¯æ”¯æŒc++11,c++14.ç†è®ºä¸Šè¿™ä¸ªåº“æ‰€æœ‰çš„åŠŸèƒ½éƒ½å¯ä»¥åœ¨c++11ä¸Šå®ç°,å°±æ˜¯ä»£ç æœ‰ç‚¹éš¾çœ‹å§.  
+2.åˆ†æ”¯æ”¯æŒmsvc 2013,2015.  
+3.æ·»åŠ VCå’ŒClangçš„æ’ä»¶,ç›´æ¥ç”Ÿåå°„çš„å®ä»£ç .(æ›´è¿›ä¸€æ­¥å¯ä»¥åœ¨ç¼–è¯‘å‰åŠ¨æ€æ›´æ–°,æš‚ç¼“)  
+4.æ”¹è¿›æ¨¡æ¿åå°„çš„å®å†™æ³•,ç›®å‰çš„éš¾ç”¨  
