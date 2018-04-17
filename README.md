@@ -1,4 +1,4 @@
-[ÖÐÎÄ°æ](CN_README.md)
+[ä¸­æ–‡ç‰ˆ](CN_README.md)
 # watery
 	c++ static reflection header only library.
 	now support enum object, class object and template object.
