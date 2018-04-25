@@ -110,31 +110,7 @@ constexpr void for_each_meta_impl(F&& f, std::index_sequence<Idx...>)
 			, 0)...
 	};
 }
-template <typename Tuple, size_t Index, typename F>
-constexpr size_t for_each_finder_tuple_meta_impl(F&& f)
-{
-	if (f(std::tuple_element_t<Index, Tuple>{}, std::integral_constant<size_t, Index>{}))
-	{
-		return Index;
-	}
-	else {
-		if constexpr(Index > 0)
-		{
-			return for_each_finder_tuple_meta_impl<Tuple, Index - 1>(std::forward<F>(f));
-		}
-		else
-		{
-			return -1;
-		}
-	}
-}
-template <typename Tuple, typename F>
-constexpr size_t for_each_finder_tuple_meta(F&& f)
-{
-	constexpr auto index = std::tuple_size_v<Tuple> - 1;
-	static_assert(index >= 0);
-	return for_each_finder_tuple_meta_impl<Tuple, index>(std::forward<F>(f));
-}
+
 }
 template<typename T>
 struct iguana_reflect_info

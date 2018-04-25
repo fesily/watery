@@ -6,6 +6,34 @@
 
 namespace watery
 {
+	namespace details
+	{
+	template <typename Tuple, size_t Index, typename F>
+	constexpr size_t for_each_finder_tuple_meta_impl(F&& f)
+	{
+		if (f(std::tuple_element_t<Index, Tuple>{}, std::integral_constant<size_t, Index>{}))
+		{
+			return Index;
+		}
+		else {
+			if constexpr(Index > 0)
+			{
+				return for_each_finder_tuple_meta_impl<Tuple, Index - 1>(std::forward<F>(f));
+			}
+			else
+			{
+				return -1;
+			}
+		}
+	}
+	template <typename Tuple, typename F>
+	constexpr size_t for_each_finder_tuple_meta(F&& f)
+	{
+		constexpr auto index = std::tuple_size_v<Tuple> -1;
+		static_assert(index >= 0);
+		return for_each_finder_tuple_meta_impl<Tuple, index>(std::forward<F>(f));
+	}
+	}
 	struct null_reflect : std::false_type{};
 	template<typename T, T value>
 	struct reflex_info : std::integral_constant<T, value>
@@ -19,6 +47,33 @@ namespace watery
 		using object_type = Obj;
 		using value_type = T;
 	};
+	template<typename Tuple,typename ...Args>
+	struct is_overload_match : std::false_type{};
+	template<typename ...Args,typename ...Args1>
+	struct is_overload_match<std::tuple<Args...>, Args1...> : std::is_invocable<void(Args...), Args1...> {};
+	template<typename Obj,typename Tuple>
+	struct reflex_function_overload;
+	template<typename Overload,typename Obj, typename ...Args>
+	auto invoke(Obj&& obj, Args&&... args)
+	{
+		using overload_t = typename Overload::overloads_type;
+		using object_t = typename Overload::object_type;
+		static_assert(std::is_same_v<std::decay_t<Obj>, object_t>);
+		constexpr auto index = details::for_each_finder_tuple_meta<overload_t>(
+			[](auto fn, auto index) constexpr {
+				return is_overload_match<decltype(fn)::param_type,Args...>::value;
+		});
+		static_assert(index != -1, "args is not match");
+		using type = std::tuple_element_t<index, overload_t>;
+		return std::invoke(type::value, std::forward<Obj>(obj), std::forward<Args>(args)...);
+	}
+	template<typename Obj, typename ... Functions>
+	struct reflex_function_overload<Obj, std::tuple<Functions...>>
+	{
+		using object_type = Obj; 
+		using overloads_type = std::tuple<Functions...>;
+	};
+
 #define _REFLEX_INFO(CALL_OPT, CV_OPT, REF_OPT, NOEXCEPT_OPT)\
 	template<typename Obj, typename Ret,typename ...Args, Ret(CALL_OPT Obj::*ptr)(Args...) CV_OPT REF_OPT NOEXCEPT_OPT>\
 	struct reflex_info<Ret(CALL_OPT Obj::*)(Args...) CV_OPT REF_OPT NOEXCEPT_OPT, ptr> \
