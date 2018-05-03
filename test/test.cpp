@@ -33,7 +33,7 @@ struct TEST
 	}
 	int g;
 };
-WATERY_REFLECTION(TEST, a, b, c, d, e, f, g,dd)
+WATERY_MAKE_SIMAPLE_META_DATA(TEST,WATERY_EMPTY_BASE_TYPE(), WATERY_GET_ARG_COUNT(a, b, c, d, e, f, g, dd), a, b, c, d, e, f, g, dd)
 template<typename T>
 struct TEST1
 {
@@ -110,8 +110,29 @@ enum class ReflxType
 	b,
 };
 WATERY_ENUM_REFLECTION(ReflxType, a, b)
+template<typename Obj, typename Ret, typename ...Args>
+constexpr Ret(Obj::*get_overload(Ret(Obj::*ptr)(Args...)))(Args...)
+{
+	return ptr;
+	using Type = Ret(Obj::*)(Args...);
+}
+
+struct TestOverLoad{
+	void T1(){}
+	void T1(int){}
+	void* T1(int, double) { return nullptr; }
+	void T2() {}
+	void T2(int) {}
+	void* T2(int, double) { return nullptr; }
+	void T3() {};
+	void T4() {};
+	int a,b,c;
+};
+
+WATERY_REFLECTION(TestOverLoad,(T3,T4,a,b,c))
 int main()
 {
+	using T = watery::reflex_member_function<void(TestOverLoad::*)(), &TestOverLoad::T1>;
 	using namespace watery;
 	//ENUM object
 	{
@@ -125,6 +146,17 @@ int main()
 		static_assert(index1 == -1);
 		constexpr auto name1 = get_name(error_type);
 		static_assert(name1 == nullptr);
+	}
+	{
+		watery::for_each_all<TestOverLoad>([](auto meta, auto index)
+		{
+			printf("%zd\n", index());
+		});
+		watery::for_each_all_meta<TestOverLoad>([](auto meta)
+		{
+			auto name = watery::get_name(meta);
+			printf("%s\n", name);
+		});
 	}
 	{
 		using T1 = std::tuple_element_t<0, watery::reflex_type_t<TEST>::reflex_type>;
