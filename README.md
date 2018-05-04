@@ -9,7 +9,8 @@ Only test on msvc2017.15.6!
 I think watery can work well on any compiler which supported c++17.  
 
 ## Install:
-Just only use <include> dir.	  
+Just only use <include> dir.
+If want use template meta module,depend on boost.preprocessor lib
 ## Example:
 ### Enum
 ```cpp
@@ -29,7 +30,8 @@ class Test{
   int b;
   int c(){}
 }
-WATERY_REFLECTION(Test,a,b,c)
+//WATERY_SIMAPLE_REFLECTION(Test,a,b,c) == WATERY_REFLECTION(Test,(a,b,c))
+WATERY_REFLECTION(Test,(a,b,c))
 watery::for_each_all_meta<Test>([](auto meta){
 constexpr auto name = watery::get_name(meta);
 if constexpr(watery::is_member_object_v(meta))

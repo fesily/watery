@@ -1,7 +1,7 @@
 #include <watery/watery.hpp>
+#include <watery/reflection_template.h>
 #include <cassert>
 #include <type_traits>
-#include "watery/reflection_macro.h"
 #include <tuple>
 
 template<typename T>
@@ -33,7 +33,8 @@ struct TEST
 	}
 	int g;
 };
-WATERY_MAKE_SIMAPLE_META_DATA(TEST,WATERY_EMPTY_BASE_TYPE(), WATERY_GET_ARG_COUNT(a, b, c, d, e, f, g, dd), a, b, c, d, e, f, g, dd)
+//WATERY_SIMAPLE_REFLECTION(TEST,a, b, c, d, e, f, g, dd) is same as WATERY_REFLECTION(TEST, (a, b, c, d, e, f, g, dd))
+WATERY_REFLECTION(TEST, (a, b, c, d, e, f, g, dd))
 template<typename T>
 struct TEST1
 {
@@ -54,8 +55,9 @@ struct TEST1
 	}
 	T g;
 };
-WATERY_REFLECTION_TEMPLATE(TEST1,1, a, b, c, d, e, f, g)
-WATERY_REFLECTION_TEMPLATE_FULL(TEST1,MACRO_FORWARD(int), a, b, c, d, e, f, g)
+WATERY_REFLECTION_TEMPLATE(TEST1, 1, (a, b, c, d, e, f, g))
+WATERY_REFLECTION_TEMPLATE_PARTIAL(TEST1,(int), (a, b, c, d, e, f, g))
+
 template<typename T,typename T2>
 struct TEST2
 {
@@ -76,10 +78,9 @@ struct TEST2
 	}
 	T2 g;
 };
-
-WATERY_REFLECTION_TEMPLATE(TEST2,2,a)
-WATERY_REFLECTION_TEMPLATE_PARTIAL(TEST2, MACRO_FORWARD(int, T1),1, a, b, c, d, e, f, g)
-WATERY_REFLECTION_TEMPLATE_FULL(TEST2, MACRO_FORWARD(int, double), a, b, c, d, e, f, g)
+WATERY_REFLECTION_TEMPLATE(TEST2,2,(a))
+WATERY_REFLECTION_TEMPLATE_PARTIAL(TEST2, (int, WATERY_TYPENAME),( a, b, c, d, e, f, g))
+WATERY_REFLECTION_TEMPLATE_PARTIAL(TEST2, (int, double), (a, b, c, d, e, f, g))
 template<typename TEST>
 void DoWork(TEST t)
 {
@@ -128,8 +129,8 @@ struct TestOverLoad{
 	void T4() {};
 	int a,b,c;
 };
+WATERY_REFLECTION(TestOverLoad, (T1, void(), void(int), void*(int, double)), (T2, void(), void(int), void*(int, double)), (T3,T4,a,b,c))
 
-WATERY_REFLECTION(TestOverLoad,(T3,T4,a,b,c))
 int main()
 {
 	using T = watery::reflex_member_function<void(TestOverLoad::*)(), &TestOverLoad::T1>;

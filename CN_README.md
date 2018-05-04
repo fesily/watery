@@ -4,7 +4,7 @@ c++ 编译期反射库,只需要头文件.
 ## Note:
 只在MSVC2017下编译过,因为其他编译器都没装.支持c++17的编译器应该都是可以的.  
 ## nstall:
-包括Include文件夹即可  
+包括Include文件夹即可,如果要使用 模板反射模块,则依赖BOOST.preprocessor库
 ## Example:
 ### Enum
 ```cpp
@@ -24,6 +24,7 @@ class Test{
 	int b;
 	int c(){}
 }
+//WATERY_SIMAPLE_REFLECTION(Test,a,b,c) == WATERY_REFLECTION(Test,(a,b,c))
 WATERY_REFLECTION(Test,a,b,c)
 watery::for_each_all_meta<Test>([](auto meta){
 constexpr auto name = watery::get_name(meta);

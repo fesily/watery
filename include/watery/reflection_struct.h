@@ -95,31 +95,20 @@ namespace watery
 }
 watery::null_reflect ____watery_reflect_invoker(...);
 
-#define WATERY_REFLEX_NAMESPACE_BEGIN_1(NAME) namespace reflect_details{ struct NAME##_iguana_reflect_members
-#define WATERY_REFLEX_NAMESPACE_END_1 }
-#define WATERY_REFLEX_NAMESPACE_1(NAME) reflect_details::NAME##_iguana_reflect_members 
-#define WATERY_REFLEX_NAMESPACE_BEGIN_0(NAME) struct __reflecx__
-#define WATERY_REFLEX_NAMESPACE_END_0
-#define WATERY_REFLEX_NAMESPACE_0(NAME) friend __reflecx__
-#define WATERY_REFLEX_NAMESPACE_BEGIN(n,NAME) WATERY_CAT(WATERY_REFLEX_NAMESPACE_BEGIN_,n)(NAME)
-#define WATERY_REFLEX_NAMESPACE_END(n) WATERY_CAT(WATERY_REFLEX_NAMESPACE_END_,n)
-#define WATERY_REFLEX_NAMESPACE(n,NAME) WATERY_CAT(WATERY_REFLEX_NAMESPACE_,n)(NAME)
 
-#define WATERY_EMPTY_BASE_TYPE() void
-
-#define WATERY_META_DATA(IN_CLASS,NAME,TYPE,BASE,ARR_NAME,ARR_REFLX)\
-WATERY_REFLEX_NAMESPACE_BEGIN(IN_CLASS,NAME)				\
+#define WATERY_META_DATA(NAMESPACE,IN_CLASS,DATA,NAME,TYPE,BASE,ARR_NAME,ARR_REFLX)\
+WATERY_CAT(NAMESPACE,BEGIN)(IN_CLASS,NAME,TYPE,DATA)					\
 							: std::true_type{				\
 using base_type = BASE;										\
-using struct_type = TYPE;									\
+using struct_type = WATERY_CAT(NAMESPACE,EXPAND_TYPE)(TYPE);	\
 using reflex_type = std::tuple<ARR_REFLX>;					\
 static const size_t all_member_size = std::tuple_size_v<reflex_type>;	\
 constexpr static WATERY_STRING name() { return WATERY_ADD_VIEW(NAME); }			\
 constexpr static std::array<WATERY_STRING, all_member_size> arr()			\
 { return { ARR_NAME }; }									\
 };															\
-WATERY_REFLEX_NAMESPACE_END(IN_CLASS)						\
-WATERY_REFLEX_NAMESPACE(IN_CLASS,NAME) ____watery_reflect_invoker(TYPE);
+WATERY_CAT(NAMESPACE,END)(IN_CLASS)							\
+NAMESPACE(IN_CLASS,NAME,TYPE,DATA) ____watery_reflect_invoker(WATERY_CAT(NAMESPACE,EXPAND_TYPE)(TYPE));
 
 
 #define IGUANA_MAKE_META_DATA_IMPL(TEMPLATE_MACRO0,TEMPLATE_MACRO1,\
