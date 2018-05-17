@@ -110,7 +110,7 @@ enum class ReflxType
 	a,
 	b,
 };
-WATERY_ENUM_REFLECTION(ReflxType, a, b)
+WATERY_REFLECTION_ENUM(ReflxType, a, b)
 template<typename Obj, typename Ret, typename ...Args>
 constexpr Ret(Obj::*get_overload(Ret(Obj::*ptr)(Args...)))(Args...)
 {
