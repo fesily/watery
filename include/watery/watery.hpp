@@ -3,7 +3,7 @@
 #define WATERY_HPP
 #include <type_traits>
 #include <tuple>
-#include <watery\reflection.h>
+#include <watery\reflection.hpp>
 
 template<typename T> struct iguana_reflect_members;
 namespace watery
@@ -230,7 +230,6 @@ constexpr WATERY_STRING get_name(const std::integral_constant<T,ptr>&)
 	static_assert(Index != -1);
 	return details::get_reflex_name<reflex_info<T, ptr>, Index>();
 }
-
 template<typename Obj, typename ...Args>
 constexpr WATERY_STRING get_name(const reflex_overload_function<Obj, Args...>&)
 {

@@ -1,7 +1,7 @@
 #pragma once
 #ifndef REFLECTION_H
 #define REFLECTION_H
-#include <watery\reflection_macro.h>
+#include <watery\reflection_macro.hpp>
 /**
  * \brief reflection object,
  *		if need support overload function,

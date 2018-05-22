@@ -1,5 +1,5 @@
 #include <watery/watery.hpp>
-#include <watery/reflection_template.h>
+#include <watery/reflection_template.hpp>
 #include <cassert>
 #include <type_traits>
 #include <tuple>
@@ -34,7 +34,9 @@ struct TEST
 	int g;
 };
 //WATERY_SIMAPLE_REFLECTION(TEST,a, b, c, d, e, f, g, dd) is same as WATERY_REFLECTION(TEST, (a, b, c, d, e, f, g, dd))
-WATERY_REFLECTION(TEST, (a, b, c, d, e, f, g, dd))
+WATERY_REFLECTION_SIMAPLE(TEST, a, b, c, d, e, f, g, dd)
+
+reflect_details::TEST_iguana_reflect_members ____watery_reflect_invoker(TEST);
 template<typename T>
 struct TEST1
 {
@@ -146,7 +148,7 @@ int main()
 		constexpr auto index1 = get_reflex_index(error_type);
 		static_assert(index1 == -1);
 		constexpr auto name1 = get_name(error_type);
-		static_assert(name1 == nullptr);
+		static_assert(name1.empty());
 	}
 	{
 		watery::for_each_all<TestOverLoad>([](auto meta, auto index)
@@ -156,7 +158,7 @@ int main()
 		watery::for_each_all_meta<TestOverLoad>([](auto meta)
 		{
 			auto name = watery::get_name(meta);
-			printf("%s\n", name);
+			printf("%s\n", name.data());
 		});
 	}
 	{
@@ -164,6 +166,7 @@ int main()
 		constexpr auto index = get_reflex_index<T1>();
 		static_assert(index == 0);
 	}
+
     {
 		using namespace watery::details;
 
@@ -181,6 +184,7 @@ int main()
 		using t5 = typename calc_member_x_index<decltype(tuple), std::is_member_object_pointer>::type;
 		static_assert(std::is_same_v<t5, std::index_sequence<0, 2, 3, 5>>, "");
     }
+
 	{
     	TEST t ={};		
 		//DoWork(t);
@@ -200,10 +204,11 @@ int main()
 	    };
 		static_assert(!is_reflection<MMM>::value, "");
     }
+
 	{
 		TEST t;
 		watery::for_each_function_meta<TEST>([=](auto fn) mutable {
-			constexpr auto name = watery::get_name(fn);
+			constexpr auto name = watery::get_name(decltype(fn){});
 			if constexpr (name != "dd")
 			{
 				watery::invoke(fn, t);

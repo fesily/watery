@@ -750,7 +750,7 @@
 #define WATERY_GET_ARG_COUNT(...)          WATERY_GET_ARG_COUNT_INNER(__VA_ARGS__, WATERY_RSEQ_N())
 
 
-#define WATERY_STRING const char*
+#define WATERY_STRING std::string_view
 #define WATERY_ADD_VIEW(...) #__VA_ARGS__
 
 
@@ -758,7 +758,7 @@
 #define WATERY_ENUM_OBJECT(t)   watery::reflex_info<struct_type,struct_type::t>
 
 
-#include <watery\reflection_struct.h>
+#include <watery\reflection_struct.hpp>
 
 namespace watery
 {
