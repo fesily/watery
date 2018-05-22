@@ -36,7 +36,6 @@ struct TEST
 //WATERY_SIMAPLE_REFLECTION(TEST,a, b, c, d, e, f, g, dd) is same as WATERY_REFLECTION(TEST, (a, b, c, d, e, f, g, dd))
 WATERY_REFLECTION_SIMAPLE(TEST, a, b, c, d, e, f, g, dd)
 
-reflect_details::TEST_iguana_reflect_members ____watery_reflect_invoker(TEST);
 template<typename T>
 struct TEST1
 {
